@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack-pub-sub
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    environment:
+      - DEBUG=1
+      - SERVICES=sns,sqs
+      - AWS_DEFAULT_REGION=us-west-2
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - ./src/test/resources/localstack-init.sh:/etc/localstack/init/ready.d/init-aws.sh
+      - localstack-data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - sangiorgio-network
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres-sangiorgio
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=sangiorgio
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - sangiorgio-network
+
+volumes:
+  localstack-data:
+    driver: local
+  postgres-data:
+    driver: local
+
+networks:
+  sangiorgio-network:
+    driver: bridge

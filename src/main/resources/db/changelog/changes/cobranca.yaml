@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_sequence_cobranca
+      author: raylson.silva
+      changes:
+        - createSequence:
+            sequenceName: cobranca_id_seq
+            incrementBy: 1
+            startValue: 1
+            minValue: 1
+            maxValue: 9223372036854775807
+            cycle: false
+  - changeSet:
+      id: create_cobranca_table
+      author: raylson.silva
+      changes:
+        - createTable:
+            tableName: cobranca
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: valor_original
+                  type: DOUBLE PRECISION
